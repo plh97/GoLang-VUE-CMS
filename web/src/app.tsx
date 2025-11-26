@@ -1,5 +1,7 @@
-import { access, defineRuntimeConfig } from '@fesjs/fes'
-
+import {
+  access,
+  defineRuntimeConfig,
+} from '@fesjs/fes'
 import { FMessage } from '@fesjs/fes-design'
 import PageLoading from '@/components/pageLoading.vue'
 import UserCenter from '@/components/userCenter.vue'

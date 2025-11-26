@@ -20,13 +20,20 @@
         "@fesjs/plugin-access": "^3.1.9",
         "@fesjs/plugin-enums": "^3.0.1",
         "@fesjs/plugin-layout": "^5.4.6",
+        "@fesjs/plugin-login": "^3.0.2",
         "@fesjs/plugin-model": "^3.0.3",
+        "@fesjs/plugin-request": "^4.0.1",
+        "@wangeditor/editor-for-vue": "^5.1.12",
         "core-js": "^3.43.0",
-        "vue": "^3.5.17"
+        "html2canvas": "^1.4.1",
+        "jsqr": "^1.4.0",
+        "vue": "^3.5.17",
+        "vue-hooks-plus": "^2.4.1"
     },
     "devDependencies": {
         "@antfu/eslint-config": "4.16.1",
         "eslint": "9.29.0",
         "typescript": "5.8.3"
-    }
+    },
+    "packageManager": "pnpm@10.13.1+sha512.37ebf1a5c7a30d5fabe0c5df44ee8da4c965ca0c5af3dbab28c3a1681b70a256218d05c81c9c0dcf767ef6b8551eb5b960042b9ed4300c59242336377e01cfad"
 }

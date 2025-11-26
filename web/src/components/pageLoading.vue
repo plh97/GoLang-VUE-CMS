@@ -1,20 +1,22 @@
-<template>
-    <div class="page-loading">
-        <f-spin size="large" stroke="#5384ff" />
-    </div>
-</template>
 <script>
-import { FSpin } from '@fesjs/fes-design';
+import { FSpin } from '@fesjs/fes-design'
 
 export default {
-    components: {
-        FSpin,
-    },
-    setup() {
-        return {};
-    },
-};
+  components: {
+    FSpin,
+  },
+  setup() {
+    return {}
+  },
+}
 </script>
+
+<template>
+  <div class="page-loading">
+    <FSpin size="large" stroke="#5384ff" />
+  </div>
+</template>
+
 <style>
 .page-loading {
     position: fixed;

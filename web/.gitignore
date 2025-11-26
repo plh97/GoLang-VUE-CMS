@@ -10,3 +10,10 @@
 /src/.fes-production
 /src/.fes-test
 .env.local
+
+# 取消忽略 web 目录中的图片文件
+!*.webp
+!*.jpg
+!*.jpeg
+!*.png
+!*.gif

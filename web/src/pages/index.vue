@@ -1,14 +1,18 @@
 <script setup>
-import { defineRouteMeta } from '@fesjs/fes'
+import { defineRouteMeta, useRouter } from '@fesjs/fes'
 
 defineRouteMeta({
   name: 'index',
   title: '首页',
 })
+
+const router = useRouter()
+
+router.replace('/user')
 </script>
 
 <template>
-  <div style="padding: 32px">
-    hello world
-  </div>
+  <h1>
+    首页
+  </h1>
 </template>
