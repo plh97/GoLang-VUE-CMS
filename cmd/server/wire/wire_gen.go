@@ -7,6 +7,8 @@
 package wire
 
 import (
+	"github.com/google/wire"
+	"github.com/spf13/viper"
 	"go-nunu/internal/handler"
 	"go-nunu/internal/job"
 	"go-nunu/internal/repository"
@@ -14,12 +16,11 @@ import (
 	"go-nunu/internal/server"
 	"go-nunu/internal/service"
 	"go-nunu/pkg/app"
+	"go-nunu/pkg/aws"
 	"go-nunu/pkg/jwt"
 	"go-nunu/pkg/log"
 	"go-nunu/pkg/server/http"
 	"go-nunu/pkg/sid"
-	"github.com/google/wire"
-	"github.com/spf13/viper"
 )
 
 // Injectors from wire.go:
@@ -35,11 +36,18 @@ func NewWire(viperViper *viper.Viper, logger *log.Logger) (*app.App, func(), err
 	userRepository := repository.NewUserRepository(repositoryRepository)
 	userService := service.NewUserService(serviceService, userRepository)
 	userHandler := handler.NewUserHandler(handlerHandler, userService)
+	cloudflareR2, cleanup, err := aws.NewR2Client(viperViper)
+	if err != nil {
+		return nil, nil, err
+	}
+	commonService := service.NewCommonService(cloudflareR2)
+	commonHandler := handler.NewCommonHandler(handlerHandler, commonService, cloudflareR2)
 	routerDeps := router.RouterDeps{
-		Logger:      logger,
-		Config:      viperViper,
-		JWT:         jwtJWT,
-		UserHandler: userHandler,
+		Logger:        logger,
+		Config:        viperViper,
+		JWT:           jwtJWT,
+		UserHandler:   userHandler,
+		CommonHandler: commonHandler,
 	}
 	httpServer := server.NewHTTPServer(routerDeps)
 	jobJob := job.NewJob(transaction, logger, sidSid)
@@ -47,6 +55,7 @@ func NewWire(viperViper *viper.Viper, logger *log.Logger) (*app.App, func(), err
 	jobServer := server.NewJobServer(logger, userJob)
 	appApp := newApp(httpServer, jobServer)
 	return appApp, func() {
+		cleanup()
 	}, nil
 }
 
@@ -54,9 +63,9 @@ func NewWire(viperViper *viper.Viper, logger *log.Logger) (*app.App, func(), err
 
 var repositorySet = wire.NewSet(repository.NewDB, repository.NewRepository, repository.NewTransaction, repository.NewUserRepository)
 
-var serviceSet = wire.NewSet(service.NewService, service.NewUserService)
+var serviceSet = wire.NewSet(service.NewService, service.NewUserService, service.NewCommonService)
 
-var handlerSet = wire.NewSet(handler.NewHandler, handler.NewUserHandler)
+var handlerSet = wire.NewSet(handler.NewHandler, handler.NewUserHandler, handler.NewCommonHandler)
 
 var jobSet = wire.NewSet(job.NewJob, job.NewUserJob)
 
@@ -70,3 +79,6 @@ func newApp(
 ) *app.App {
 	return app.NewApp(app.WithServer(httpServer, jobServer), app.WithName("demo-server"))
 }
+
+// 声明 R2 构造函数
+var awsSet = wire.NewSet(aws.NewR2Client)

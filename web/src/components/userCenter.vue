@@ -1,35 +1,59 @@
 <script lang="ts" setup>
-import { useRouter } from '@fesjs/fes'
-import { FButton } from '@fesjs/fes-design'
-import { request } from '@/api'
+import { useModel, useRouter } from '@fesjs/fes'
+import { FButton, FAvatar } from '@fesjs/fes-design'
 import { setToken } from '@/common/utils'
 
-// import { useModel } from '@fesjs/fes'
-
-// const initialState = useModel('@@initialState')
 const router = useRouter()
 async function handleLogout() {
-  await request('/admin/logout', {}, { method: 'POST' })
   setToken('')
   router.replace('/login')
+}
+const initialState = useModel('@@initialState')
+function handleClick() {
+  router.push('/profile')
 }
 </script>
 
 <template>
   <div class="right">
-    <!-- {{ initialState.userName }} -->
+    <a class="avatar-container" @click="handleClick">
+      <FAvatar :src="initialState?.image" class="avatar" alt="avatar" />
+      <span class="name">
+        {{ initialState.nickname || initialState.email || initialState.userId }}
+      </span>
+    </a>
     <FButton type="link" class="link" @click="handleLogout">
       退出登录
     </FButton>
   </div>
 </template>
 
-<style scope>
+<style scope lang="less">
 .link {
   color: rgb(255, 255, 255);
 }
 .right {
   text-align: right;
   padding: 0 20px;
+}
+.avatar-container {
+  display: inline-flex;
+  flex-direction: column;
+  width: 60px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .name {
+    color: #fff;
+    font-size: 12px;
+    line-height: 12px;
+    margin-top: 4px;
+  }
 }
 </style>

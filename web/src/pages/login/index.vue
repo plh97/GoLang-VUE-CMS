@@ -19,8 +19,8 @@ const formRef = ref(null)
 const state = reactive({
   submitLoading: false,
   submitText: '登录',
-  username: '1',
-  password: '1',
+  username: '1234@gmail.com',
+  password: '123456',
 })
 const validator = useValidator(state)
 const rules = computed(() => {
@@ -50,13 +50,14 @@ async function submitHandler() {
   state.submitLoading = true
   state.submitText = '校验中'
   request('/login', {
-    user_name: state.username,
+    email: state.username,
     password: state.password,
   }, {
     method: 'POST',
   }).then(async (res) => {
-    setToken(res.token)
-    router.replace('/user')
+    setToken(res.accessToken)
+    window.location.replace('/user')
+    // router.replace('/user')
   }).catch(() => {
     state.submitLoading = false
     state.submitText = '提交'
@@ -64,7 +65,7 @@ async function submitHandler() {
 }
 function goRegister() {
   request('/register', {
-    user_name: state.username,
+    email: state.username,
     password: state.password,
   }, {
     method: 'POST',
@@ -94,9 +95,9 @@ function goRegister() {
           <FButton size="large" class="button" type="primary" :loading="state.submitLoading" @click="submitHandler">
             {{ state.submitText }}
           </FButton>
-          <!-- <FButton type="primary" @click="goRegister">
+          <FButton size="large" class="button" type="info" @click="goRegister">
             注册
-          </FButton> -->
+          </FButton>
         </FSpace>
       </FFormItem>
     </FForm>
@@ -136,6 +137,7 @@ function goRegister() {
     line-height: normal;
     display: flex;
     align-items: center;
+
     img {
       width: 41px;
       height: 41px;
@@ -153,15 +155,18 @@ function goRegister() {
     border: 0.5px solid #878787;
 
     .button {
-      width: 423px;
+      // width: 423px;
+      width: calc(410px / 2);
       height: 57px;
       margin-top: 57px;
     }
+
     :global(#login .fes-input-inner) {
       height: 59px;
       font-size: 14px;
       padding: 0 27px;
     }
+
     :global(#login .fes-form .fes-form-item .fes-form-item-label.is-required::before) {
       display: none;
     }

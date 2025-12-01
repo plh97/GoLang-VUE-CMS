@@ -64,9 +64,9 @@ export function formatArray(data: string | JSON) {
 }
 
 export function getToken() {
-  return localStorage.getItem('token') ?? ''
+  return cookieStore.get('accessToken') ?? ''
 }
 
 export function setToken(token: string) {
-  return localStorage.setItem('token', token)
+  return cookieStore.set('accessToken', token)
 }

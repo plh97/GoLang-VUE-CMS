@@ -36,12 +36,6 @@ export default defineBuildConfig({
         icon: 'AppstoreOutlined',
         // icon: '/server.svg',
       },
-      {
-        name: 'scan',
-        match: ['scan'],
-        icon: 'LinkOutlined',
-        // icon: '/server.svg',
-      },
     ],
   },
   enums: {

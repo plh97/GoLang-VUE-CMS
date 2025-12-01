@@ -2,7 +2,7 @@ env: local
 http:
   #  host: 0.0.0.0
   host: 127.0.0.1
-  port: 8000
+  port: 8291
 security:
   api_sign:
     app_key: 123456
@@ -37,3 +37,11 @@ log:
   max_age: 7
   max_size: 1024
   compress: true
+r2_aws:
+  access_key_id: 17fad69440709b6a9f7982dbe95124dc
+  secret_access_key: 35640b0a24b81e25eab93a5dad5a2c5bb59f6401e6e9a2437ed6b3db1b9e5fae
+  region: auto
+  session_token: 
+  file_url: https://pub-cee4430bd1ef46588b9b587cffa3c62e.r2.dev/
+  account_id: b27dd422b6edd37f3e65d02ef95c68bf
+  bucket: plhh

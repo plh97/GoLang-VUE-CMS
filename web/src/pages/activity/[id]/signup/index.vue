@@ -53,7 +53,7 @@ const { loading, data, run } = useRequest(() => request('/sign_up/list', {
     if (data?.code !== 0) {
       // Reject the promise with an error object containing code and message
       FMessage.error({
-        content: data?.msg,
+        content: data?.message,
       })
     }
     return {

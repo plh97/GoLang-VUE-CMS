@@ -14,6 +14,7 @@ type UserService interface {
 	Register(ctx context.Context, req *v1.RegisterRequest) error
 	Login(ctx context.Context, req *v1.LoginRequest) (string, error)
 	GetProfile(ctx context.Context, userId string) (*v1.GetProfileResponseData, error)
+	GetUserList(ctx context.Context) (*v1.GetUserListResponseData, error)
 	UpdateProfile(ctx context.Context, userId string, req *v1.UpdateProfileRequest) error
 }
 
@@ -94,7 +95,20 @@ func (s *userService) GetProfile(ctx context.Context, userId string) (*v1.GetPro
 
 	return &v1.GetProfileResponseData{
 		UserId:   user.UserId,
-		Nickname: user.Nickname,
+		Nickname: user.Name,
+		Email:    user.Email,
+		Image:    user.Image,
+	}, nil
+}
+
+func (s *userService) GetUserList(ctx context.Context) (*v1.GetUserListResponseData, error) {
+	user, err := s.userRepo.GetUserList(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &v1.GetUserListResponseData{
+		List: *user,
 	}, nil
 }
 
@@ -105,7 +119,8 @@ func (s *userService) UpdateProfile(ctx context.Context, userId string, req *v1.
 	}
 
 	user.Email = req.Email
-	user.Nickname = req.Nickname
+	user.Name = req.Nickname
+	user.Image = req.Image
 
 	if err = s.userRepo.Update(ctx, user); err != nil {
 		return err

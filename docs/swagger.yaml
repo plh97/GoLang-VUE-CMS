@@ -73,7 +73,7 @@ definitions:
     required:
     - email
     type: object
-host: localhost:8000
+host: localhost:8291
 info:
   contact:
     email: support@swagger.io

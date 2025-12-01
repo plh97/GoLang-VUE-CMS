@@ -1,32 +1,61 @@
 import { FMessage } from '@fesjs/fes-design'
-import { getToken, setToken } from './common/utils'
+import { setToken } from './common/utils'
 import { baseURL } from './config'
 
-export async function request(url: string, data: any = {}, options: any = {}) {
+// Helper function to convert an object into a query string
+function toQueryString(data: Record<string, any>): string {
+    const params = new URLSearchParams()
+    for (const key in data) {
+        if (Object.prototype.hasOwnProperty.call(data, key) && data[key] !== undefined && data[key] !== null) {
+            params.append(key, data[key])
+        }
+    }
+    const queryString = params.toString()
+    return queryString ? `?${queryString}` : ''
+}
+
+
+export async function request(url: string, data: Record<string, any> = {}, options: any = {}) {
   const config: RequestInit = {
     method: options.method || 'GET',
     headers: {
-      'Token': getToken() ?? '',
+      // 'Token': getToken() ?? '',
       'Content-Type': 'application/json',
       ...(options.headers ?? {}),
     },
+    credentials: "include"
   }
-  // 处理请求体
-  if (options.method && options.method !== 'GET') {
+  
+  let finalUrl = baseURL + "/v1" + url
+  
+  // 1. 🔍 HANDLE GET REQUEST PARAMETERS
+  if (config.method === 'GET') {
+      const queryString = toQueryString(data)
+      // Append the query string to the URL
+      if (queryString) {
+          finalUrl += queryString
+      }
+      // GET requests MUST NOT have a body
+      config.body = undefined 
+  }
+
+  // 2. 📝 HANDLE POST/PUT/DELETE REQUEST BODY (your original logic)
+  else if (options.method) { // Not GET
     if (data instanceof FormData) {
       config.body = data
       // eslint-disable-next-line ts/ban-ts-comment
       // @ts-ignore
       delete config.headers['Content-Type']
-    }
-    else {
+    } else {
       // eslint-disable-next-line ts/ban-ts-comment
       // @ts-ignore
       config.headers['Content-Type'] = 'application/json'
       config.body = JSON.stringify(data)
     }
   }
-  return fetch(baseURL + url, config).then(async (response) => {
+
+  // 3. 🚀 FETCH CALL (Using the potentially modified finalUrl)
+  return fetch(finalUrl, config).then(async (response) => {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
@@ -35,7 +64,7 @@ export async function request(url: string, data: any = {}, options: any = {}) {
     // 处理响应内容异常
     if (data?.code === 2000) {
       FMessage.error({
-        content: data?.msg,
+        content: data?.message,
       })
       setToken('')
       location.replace('/login')
@@ -44,9 +73,9 @@ export async function request(url: string, data: any = {}, options: any = {}) {
     if (data?.code !== 0) {
       // Reject the promise with an error object containing code and message
       FMessage.error({
-        content: data?.msg,
+        content: data?.message,
       })
-      return Promise.reject(new Error(data?.msg))
+      return Promise.reject(data?.message)
     }
     if (options.transformData) {
       return options.transformData(data)

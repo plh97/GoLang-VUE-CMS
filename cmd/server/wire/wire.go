@@ -15,6 +15,8 @@ import (
 	"go-nunu/pkg/log"
 	"go-nunu/pkg/server/http"
 	"go-nunu/pkg/sid"
+	"go-nunu/pkg/aws"
+
 	"github.com/google/wire"
 	"github.com/spf13/viper"
 )
@@ -31,11 +33,13 @@ var repositorySet = wire.NewSet(
 var serviceSet = wire.NewSet(
 	service.NewService,
 	service.NewUserService,
+	service.NewCommonService,
 )
 
 var handlerSet = wire.NewSet(
 	handler.NewHandler,
 	handler.NewUserHandler,
+	handler.NewCommonHandler,
 )
 
 var jobSet = wire.NewSet(
@@ -59,6 +63,11 @@ func newApp(
 	)
 }
 
+// 声明 R2 构造函数
+var awsSet = wire.NewSet(
+	aws.NewR2Client, // Wire 会自动处理 *viper.Viper 和 *log.Logger 的注入
+)
+
 func NewWire(*viper.Viper, *log.Logger) (*app.App, func(), error) {
 	panic(wire.Build(
 		repositorySet,
@@ -69,6 +78,7 @@ func NewWire(*viper.Viper, *log.Logger) (*app.App, func(), error) {
 		wire.Struct(new(router.RouterDeps), "*"),
 		sid.NewSid,
 		jwt.NewJwt,
+		awsSet,
 		newApp,
 	))
 }

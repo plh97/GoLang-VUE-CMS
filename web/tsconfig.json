@@ -30,6 +30,8 @@
     "*.js",
     ".fes*.js",
     "src/**/*",
+    // "src/**/*.tsx",
+    // "src/**/*.js",
     "typings/**/*",
     "config/**/*"
   ],

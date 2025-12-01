@@ -21,7 +21,7 @@ const { loading, data } = useRequest(() => request('/user_profile/detail', {
     if (data?.code !== 0) {
       // Reject the promise with an error object containing code and message
       FMessage.error({
-        content: data?.msg,
+        content: data?.message,
       })
     }
     return {

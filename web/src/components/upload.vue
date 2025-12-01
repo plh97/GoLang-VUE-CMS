@@ -24,17 +24,26 @@ const fileList = ref<FileItem[]>(props.modelValue?.map(url => ({ url })) as File
 
 async function handleUpload({ file, onProgress, onSuccess }: { file: File, onProgress: (progress: { percent: number }) => void, onSuccess: (url: string) => void }) {
   const fileExt = file.name.split('.').pop() || 'png'
-  const formData = new FormData()
-  formData.append('file_ext', fileExt)
-  formData.append('upload_scene', '1')
-  formData.append('file', file)
-  const url = await request('/common/upload', formData, {
-    method: 'post',
+  // const formData = new FormData()
+  // formData.append('file_ext', fileExt)
+  // formData.append('upload_scene', '1')
+  // formData.append('file', file)
+  const url = await request('/common/upload', {
+    file_ext: fileExt,
+    upload_scene: 1,
+  }, { method: 'post' })
+  await fetch(url.pre_signed_url, {
+    method: 'put',
+    headers: {
+      'Content-Type': file.type,
+    },
+    // data: file,
+    body: file,
   })
   onProgress({
     percent: 100,
   })
-  onSuccess(url)
+  onSuccess(url.endpoint_url)
 }
 
 function handleSuccess(res: { fileList: FileItem[] }) {

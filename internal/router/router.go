@@ -12,4 +12,5 @@ type RouterDeps struct {
 	Config      *viper.Viper
 	JWT         *jwt.JWT
 	UserHandler *handler.UserHandler
+	CommonHandler *handler.CommonHandler
 }
