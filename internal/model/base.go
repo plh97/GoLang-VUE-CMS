@@ -1,6 +1,8 @@
 package model
 
 import (
+	"fmt"
+	"go-nunu/api"
 	"time"
 
 	"gorm.io/gorm"
@@ -13,4 +15,17 @@ type BaseModel struct {
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+}
+
+func Paginate(param api.PageRequest) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		page := param.CurrentPage
+		if page <= 0 {
+			page = 1
+		}
+		offset := (page - 1) * param.PageSize
+		fmt.Println("++++++++", offset)
+		fmt.Println("++++++++", param.PageSize)
+		return db.Offset(offset).Limit(param.PageSize)
+	}
 }

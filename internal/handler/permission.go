@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"go-nunu/api"
 	v1 "go-nunu/api/v1"
 	"go-nunu/internal/service"
 	"net/http"
@@ -26,7 +27,12 @@ func NewPermissionHandler(
 
 func (h *PermissionHandler) GetPermissionList(ctx *gin.Context) {
 	// Implementation for getting a permission
-	permissionList, err := h.permissionService.GetPermissionList(ctx)
+	var req v1.GetPermissionListRequest
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		v1.HandleError(ctx, http.StatusBadRequest, v1.ErrBadRequest, nil)
+		return
+	}
+	permissionList, count, err := h.permissionService.GetPermissionList(ctx, req)
 	if err != nil {
 		v1.HandleError(ctx, http.StatusOK, v1.ErrBadRequest, nil)
 		return
@@ -34,6 +40,9 @@ func (h *PermissionHandler) GetPermissionList(ctx *gin.Context) {
 
 	v1.HandleSuccess(ctx, v1.GetPermissionListResponseData{
 		List: permissionList,
+		PageResponse: api.PageResponse{
+			Total: count,
+		},
 	})
 }
 

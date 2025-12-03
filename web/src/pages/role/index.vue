@@ -221,7 +221,7 @@ async function handlePermissionChange(roleId: number, newPermIds: number[]) {
     v-show="!loading" always-scrollbar class="table" :height="10" size="small" row-key="id"
     :data="data?.list ?? []"
   >
-    <FTableColumn fixed="left" prop="id" label="Role ID" :min-width="60" />
+    <FTableColumn fixed="left" prop="id" label="ID" :width="60" />
     <FTableColumn prop="name" label="角色名称" :min-width="150" />
     <FTableColumn label="权限分配/操作" :min-width="350">
       <template #default="{ row }">

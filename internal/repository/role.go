@@ -38,7 +38,13 @@ func (r *roleRepository) Get(ctx context.Context, param v1.GetRoleListRequest) *
 	var roles []model.Role
 	db := r.db.WithContext(ctx).Model(&roles)
 	if param.PageRequest.CurrentPage > 0 {
-		db = db.Scopes(model.SetPage(*param.PageRequest))
+		db = db.Scopes(model.Paginate(param.PageRequest))
+	}
+	if param.Name != "" {
+		db = db.Where("name LIKE ?", "%"+param.Name+"%")
+	}
+	if param.ID != 0 {
+		db = db.Where("id = ?", param.ID)
 	}
 	return db
 }
@@ -54,8 +60,8 @@ func (r *roleRepository) GetRoleList(ctx context.Context, req v1.GetRoleListRequ
 
 func (r *roleRepository) GetRoleCount(ctx context.Context, req v1.GetRoleListRequest) (int, error) {
 	var count int64
-	var roles []model.Role
-	err := r.db.WithContext(ctx).Model(&roles).Count(&count).Error
+	db := r.Get(ctx, v1.GetRoleListRequest{Name: req.Name, ID: req.ID})
+	err := db.Count(&count).Error
 	if err != nil {
 		return 0, err
 	}

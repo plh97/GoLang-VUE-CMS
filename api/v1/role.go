@@ -1,6 +1,9 @@
 package v1
 
-import "go-nunu/internal/model"
+import (
+	"go-nunu/api"
+	"go-nunu/internal/model"
+)
 
 type CreateRoleRequest struct {
 	Name          string `json:"name"`
@@ -10,11 +13,13 @@ type CreateRoleRequest struct {
 }
 
 type GetRoleListRequest struct {
-	PageRequest
+	api.PageRequest
+	Name string `json:"name" form:"name"`
+	ID   int    `json:"id" form:"id"`
 }
 
 type GetRoleListResponseData struct {
-	PageResponse
+	api.PageResponse
 	List []model.Role `json:"list"`
 }
 

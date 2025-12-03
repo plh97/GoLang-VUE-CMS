@@ -8,7 +8,7 @@ import (
 )
 
 type PermissionService interface {
-	GetPermissionList(ctx context.Context) ([]model.Permission, error)
+	GetPermissionList(ctx context.Context, req v1.GetPermissionListRequest) ([]model.Permission, int, error)
 	CreatePermission(ctx context.Context, req v1.CreatePermissionRequest) (*model.Permission, error)
 }
 
@@ -27,8 +27,14 @@ type permissionService struct {
 	permissionRepository repository.PermissionRepository
 }
 
-func (s *permissionService) GetPermissionList(ctx context.Context) ([]model.Permission, error) {
-	return s.permissionRepository.GetPermissionList(ctx)
+func (s *permissionService) GetPermissionList(ctx context.Context, req v1.GetPermissionListRequest) ([]model.Permission, int, error) {
+
+	count, err1 := s.permissionRepository.GetPermissionCount(ctx, req)
+	if err1 != nil {
+		return nil, 0, err1
+	}
+	permissions, err2 := s.permissionRepository.GetPermissionList(ctx, req)
+	return permissions, count, err2
 }
 
 func (s *permissionService) CreatePermission(ctx context.Context, req v1.CreatePermissionRequest) (*model.Permission, error) {

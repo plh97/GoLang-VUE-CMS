@@ -1,11 +1,18 @@
 package v1
 
-import "go-nunu/internal/model"
+import (
+	"go-nunu/api"
+	"go-nunu/internal/model"
+)
+
+type GetPermissionListRequest struct {
+	api.PageRequest
+	Name string `json:"name" form:"name"`
+	ID   int    `json:"id" form:"id"`
+}
 
 type GetPermissionListResponseData struct {
-	// UserId   string `json:"userId"`
-	// Nickname string `json:"nickname" example:"alan"`
-	// Email    string `json:"email" example:"alan"`
+	api.PageResponse
 	List []model.Permission `json:"list"`
 }
 type GetPermissionListResponse struct {

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"go-nunu/api"
 	v1 "go-nunu/api/v1"
 	"go-nunu/internal/service"
 	"net/http"
@@ -38,7 +39,7 @@ func (h *RoleHandler) GetRoleList(ctx *gin.Context) {
 
 	v1.HandleSuccess(ctx, v1.GetRoleListResponseData{
 		List: roleList,
-		PageResponse: v1.PageResponse{
+		PageResponse: api.PageResponse{
 			Total: count,
 		},
 	})
@@ -72,8 +73,8 @@ func (h *RoleHandler) UpdateRolePermissions(ctx *gin.Context) {
 	// For example:
 	err := h.roleService.UpdateRolePermissions(ctx, req.ID, req.PermissionIds)
 	if err != nil {
-	    v1.HandleError(ctx, http.StatusOK, v1.ErrBadRequest, nil)
-	    return
+		v1.HandleError(ctx, http.StatusOK, v1.ErrBadRequest, nil)
+		return
 	}
 
 	// For now, we'll just return a success response.

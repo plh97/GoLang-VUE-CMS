@@ -35,30 +35,30 @@ defineRouteMeta({
 //   status: 1, // Default 1: Enabled
 // })
 const createFormState = reactive({
-    // 基础信息
-    name: '查看用户列表',       // 权限名称 (例如：新增用户)
-    key: 'sys:user:list',        // 权限标识 (例如：sys:user:add)
-    
-    // 核心类型与层级
-    type: 2,                     // 权限类型 (默认菜单 2 或 按钮 3)
-    parentId: 0,                 // 父级ID (默认为 0，如果是子菜单，则填写父级ID)
-    sort: 0,                     // 排序
-    
-    // 前端路由 (用于 Type=2)
-    path: '/system/user',        // 前端路由地址
-    component: 'views/system/user/index', // 前端组件路径
+  // 基础信息
+  name: '查看用户列表',       // 权限名称 (例如：新增用户)
+  key: 'sys:user:list',        // 权限标识 (例如：sys:user:add)
 
-    // 后端鉴权 (用于 Type=3)
-    api: '/v1/user/list',        // 后端接口路径
-    method: 'POST',              // 请求方法 (通常查询用 GET, 但这里我们暂时用 POST 兼容之前的查询接口)
-    
-    // ❌ 注意：Permission 表通常不包含 status 字段，该字段是 Role的属性
-    // status: 1, 
+  // 核心类型与层级
+  type: 2,                     // 权限类型 (默认菜单 2 或 按钮 3)
+  parentId: 0,                 // 父级ID (默认为 0，如果是子菜单，则填写父级ID)
+  sort: 0,                     // 排序
+
+  // 前端路由 (用于 Type=2)
+  path: '/system/user',        // 前端路由地址
+  component: 'views/system/user/index', // 前端组件路径
+
+  // 后端鉴权 (用于 Type=3)
+  api: '/v1/user/list',        // 后端接口路径
+  method: 'POST',              // 请求方法 (通常查询用 GET, 但这里我们暂时用 POST 兼容之前的查询接口)
+
+  // ❌ 注意：Permission 表通常不包含 status 字段，该字段是 Role的属性
+  // status: 1, 
 })
 
 const pageState = reactive({
   current_page: 1,
-  page_size: 20,
+  page_size: 15,
   total: 0,
 })
 
@@ -88,12 +88,8 @@ function reqUserProfile() {
     id: +searchState.id,
     name: searchState.name,
     bind_type: searchState.bind_type,
-    page: {
-      current_page: pageState.current_page,
-      page_count: 0,
-      page_size: pageState.page_size, // 获取全部活动
-      total: 0,
-    },
+    current_page: pageState.current_page,
+    page_size: pageState.page_size, // 获取全部活动
   }
   return request('/permission/list', data)
 }
@@ -102,7 +98,7 @@ const {
   loading,
   data,
   run: getPermissionList,
-} = useRequest<{ list: IUserProfile[], page: { total: number } }>(
+} = useRequest<{ list: IUserProfile[], total: number }>(
   reqUserProfile,
 )
 
@@ -137,10 +133,8 @@ async function handleCreatePermission() {
   <nav>
     <h1>账号资料</h1>
     <div>
-      <FForm
-        ref="formRef" :model="data" label-position="right" :span="12" align="flex-start"
-        class="user-profile-search-form" @keydown.enter="getPermissionList"
-      >
+      <FForm ref="formRef" :model="data" label-position="right" :span="12" align="flex-start"
+        class="user-profile-search-form" @keydown.enter="getPermissionList">
         <FFormItem prop="id" label="ID:">
           <FInput v-model="searchState.id" placeholder="请输入ID" @input="pageState.current_page = 1" />
         </FFormItem>
@@ -152,10 +146,8 @@ async function handleCreatePermission() {
             <FOption :value="0">
               全部
             </FOption>
-            <FOption
-              v-for="(id) in Object.keys(LOGIN_TYPE).filter((k) => isNaN(+(LOGIN_TYPE[k as any])))"
-              :key="id" :value="+id"
-            >
+            <FOption v-for="(id) in Object.keys(LOGIN_TYPE).filter((k) => isNaN(+(LOGIN_TYPE[k as any])))" :key="id"
+              :value="+id">
               {{ LOGIN_TYPE[+id] }}
             </FOption>
           </FSelect>
@@ -180,95 +172,78 @@ async function handleCreatePermission() {
   <div v-if="loading" class="loading">
     <LoadingOutlined class="icon" />
   </div>
-  <FTable
-    v-show="!loading" always-scrollbar class="table" :height="10" size="small" row-key="id"
-    :data="data?.list ?? []"
->
+  <FTable v-show="!loading" always-scrollbar class="table" :height="10" size="small" row-key="id"
+    :data="data?.list ?? []">
     <FTableColumn fixed="left" prop="id" label="权限ID" :min-width="60" />
     <FTableColumn prop="name" label="权限名称" :min-width="120" />
     <FTableColumn prop="key" label="唯一标识" :min-width="150" />
 
     <FTableColumn prop="type" label="类型" :min-width="80">
-        <template #default="{ row }">
-            {{ row.type === 1 ? '目录' : row.type === 2 ? '菜单' : '按钮' }}
-        </template>
+      <template #default="{ row }">
+        {{ row.type === 1 ? '目录' : row.type === 2 ? '菜单' : '按钮' }}
+      </template>
     </FTableColumn>
-    
+
     <FTableColumn prop="api" label="API路径/组件" :min-width="200" />
     <FTableColumn prop="method" label="方法" :min-width="80" />
 
     <FTableColumn :min-width="163" prop="created_at" label="创建时间">
-        <template #default="{ row }">
-            {{ formatTimestamp(row.created_at) }}
-        </template>
+      <template #default="{ row }">
+        {{ formatTimestamp(row.created_at) }}
+      </template>
     </FTableColumn>
-</FTable>
-  <FPagination
-    v-if="!loadingOnce"
-    class="pagination"
-    show-total
-    :total-count="data?.page?.total"
-    show-size-changer
-    show-quick-jumper
-    :page-size="pageState.page_size"
-    @change="handleChange"
-  />
-  <FModal
-    v-model:show="state.modal"
-    title="创建Permission"
-    display-directive="show"
-    @ok="handleCreatePermission"
->
-    <FForm
-        ref="formRef" :model="createFormState" label-position="top" :span="12" align="flex-start"
-        class="permission-create-form"
-    >
-        <FFormItem prop="type" label="权限类型:">
-            <FRadioGroup v-model="createFormState.type">
-                <FRadio :value="1">目录</FRadio>
-                <FRadio :value="2">菜单</FRadio>
-                <FRadio :value="3">按钮</FRadio>
-            </FRadioGroup>
-        </FFormItem>
+  </FTable>
+  <FPagination v-if="!loadingOnce" class="pagination" show-total :total-count="data?.total" show-size-changer
+    show-quick-jumper :page-size="pageState.page_size" @change="handleChange" />
+  <FModal v-model:show="state.modal" title="创建Permission" display-directive="show" @ok="handleCreatePermission">
+    <FForm ref="formRef" :model="createFormState" label-position="top" :span="12" align="flex-start"
+      class="permission-create-form">
+      <FFormItem prop="type" label="权限类型:">
+        <FRadioGroup v-model="createFormState.type">
+          <FRadio :value="1">目录</FRadio>
+          <FRadio :value="2">菜单</FRadio>
+          <FRadio :value="3">按钮</FRadio>
+        </FRadioGroup>
+      </FFormItem>
 
-        <FFormItem prop="name" label="权限名称:">
-            <FInput v-model="createFormState.name" placeholder="例如：删除用户" />
-        </FFormItem>
-        <FFormItem prop="key" label="唯一标识 (Key):">
-            <FInput v-model="createFormState.key" placeholder="例如：sys:user:delete" />
-        </FFormItem>
-        
-        <template v-if="createFormState.type >= 2">
-            <FFormItem prop="path" label="前端路由 Path:">
-                <FInput v-model="createFormState.path" placeholder="例如：/system/user" />
-            </FFormItem>
-            <FFormItem prop="component" label="前端组件路径:">
-                <FInput v-model="createFormState.component" placeholder="例如：views/system/user/index" />
-            </FFormItem>
-        </template>
+      <FFormItem prop="name" label="权限名称:">
+        <FInput v-model="createFormState.name" placeholder="例如：删除用户" />
+      </FFormItem>
+      <FFormItem prop="key" label="唯一标识 (Key):">
+        <FInput v-model="createFormState.key" placeholder="例如：sys:user:delete" />
+      </FFormItem>
 
-        <template v-if="createFormState.type === 3">
-            <FFormItem prop="api" label="后端接口 API:">
-                <FInput v-model="createFormState.api" placeholder="例如：/v1/user/:id" />
-            </FFormItem>
-            <FFormItem prop="method" label="请求方法:">
-                <FSelect v-model="createFormState.method">
-                    <FOption value="GET">GET</FOption>
-                    <FOption value="POST">POST</FOption>
-                    <FOption value="PUT">PUT</FOption>
-                    <FOption value="DELETE">DELETE</FOption>
-                </FSelect>
-            </FFormItem>
-        </template>
+      <template v-if="createFormState.type >= 2">
+        <FFormItem prop="path" label="前端路由 Path:">
+          <FInput v-model="createFormState.path" placeholder="例如：/system/user" />
+        </FFormItem>
+        <FFormItem prop="component" label="前端组件路径:">
+          <FInput v-model="createFormState.component" placeholder="例如：views/system/user/index" />
+        </FFormItem>
+      </template>
 
-        <FFormItem prop="parentId" label="父级权限 ID:">
-            <FInput v-model="createFormState.parentId" type="number" placeholder="0 为顶级" />
+      <template v-if="createFormState.type === 3">
+        <FFormItem prop="api" label="后端接口 API:">
+          <FInput v-model="createFormState.api" placeholder="例如：/v1/user/:id" />
         </FFormItem>
-        <FFormItem prop="sort" label="排序 (Sort):">
-            <FInput v-model="createFormState.sort" type="number" placeholder="数字越小越靠前" />
+        <FFormItem prop="method" label="请求方法:">
+          <FSelect v-model="createFormState.method">
+            <FOption value="GET">GET</FOption>
+            <FOption value="POST">POST</FOption>
+            <FOption value="PUT">PUT</FOption>
+            <FOption value="DELETE">DELETE</FOption>
+          </FSelect>
         </FFormItem>
+      </template>
+
+      <FFormItem prop="parentId" label="父级权限 ID:">
+        <FInput v-model="createFormState.parentId" type="number" placeholder="0 为顶级" />
+      </FFormItem>
+      <FFormItem prop="sort" label="排序 (Sort):">
+        <FInput v-model="createFormState.sort" type="number" placeholder="数字越小越靠前" />
+      </FFormItem>
     </FForm>
-</FModal>
+  </FModal>
 </template>
 
 <style scoped lang="less">
@@ -308,6 +283,7 @@ nav {
   flex: 1;
   display: flex;
   flex-direction: column;
+
   :global(.table .fes-table-body-wrapper) {
     flex: 1;
     overflow: scroll;
