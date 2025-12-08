@@ -13,7 +13,7 @@ import (
 type RoleService interface {
 	GetRole(ctx context.Context, id int) (*model.Role, error)
 	CreateRole(ctx context.Context, req v1.CreateRoleRequest) (*model.Role, error)
-	GetRoleList(ctx context.Context, req v1.GetRoleListRequest) ([]model.Role, int, error)
+	GetRoleList(ctx context.Context, req v1.GetRoleListRequest) ([]v1.RoleInfo, int, error)
 	UpdateRolePermissions(ctx context.Context, roleId int, permissionIds []uint) error
 }
 
@@ -60,7 +60,7 @@ func (s *roleService) CreateRole(ctx context.Context, req v1.CreateRoleRequest) 
 	return role, err
 }
 
-func (s *roleService) GetRoleList(ctx context.Context, req v1.GetRoleListRequest) ([]model.Role, int, error) {
+func (s *roleService) GetRoleList(ctx context.Context, req v1.GetRoleListRequest) ([]v1.RoleInfo, int, error) {
 	roles, err := s.roleRepository.GetRoleList(ctx, req)
 	if err != nil {
 		return nil, 0, err

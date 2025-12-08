@@ -11,7 +11,7 @@ import (
 
 type RoleRepository interface {
 	GetRole(ctx context.Context, id int) (*model.Role, error)
-	GetRoleList(ctx context.Context, req v1.GetRoleListRequest) ([]model.Role, error)
+	GetRoleList(ctx context.Context, req v1.GetRoleListRequest) ([]v1.RoleInfo, error)
 	GetRoleCount(ctx context.Context, req v1.GetRoleListRequest) (int, error)
 	CreateRole(ctx context.Context, role *model.Role) (*model.Role, error)
 	UpdateRole(ctx context.Context, role *model.Role) (*model.Role, error)
@@ -67,11 +67,11 @@ func (r *roleRepository) GetRoleList(ctx context.Context, req v1.GetRoleListRequ
 		if err != nil {
 			return nil, fmt.Errorf("获取角色权限失败: %v", err)
 		}
-		permissions := make([]v1.RoleInfo, len(list))
+		permissions := make([]model.Permission, len(list))
 		for j, permName := range list {
-			permissions[j] = v1.RoleInfo{Role: model.Role{
+			permissions[j] = model.Permission{
 				Name: permName,
-			}}
+			}
 		}
 		role.Permissions = permissions
 	}

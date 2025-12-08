@@ -25,7 +25,7 @@ type RoleInfo struct {
 
 type GetRoleListResponseData struct {
 	api.PageResponse
-	List []model.Role `json:"list"`
+	List []RoleInfo `json:"list"`
 }
 
 type GetRoleListResponse struct {
