@@ -23,11 +23,11 @@ test:
 
 .PHONY: build
 build:
-	go build -ldflags="-s -w" -o ./bin/server ./cmd/server
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o ./cmd/server/main ./cmd/server/main.go
 
 .PHONY: docker
 docker:
-	docker build -f deploy/build/Dockerfile --build-arg APP_ENV=prod --build-arg APP_RELATIVE_PATH=./cmd/server -t 1.1.1.1:8291/server:v1 .
+	docker build -f deploy/build/Dockerfile --build-arg APP_ENV=prod -t 1.1.1.1:8291/server:v1 .
 # 	docker run --rm -i 1.1.1.1:8291/server:v1
 	docker run --rm -it -p 8291:8291 1.1.1.1:8291/server:v1
 
