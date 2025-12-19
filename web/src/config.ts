@@ -7,7 +7,7 @@ function getBaseURL() {
     // return 'https://test-manage-api.ohayo.date'
   }
   const envToUrlMap = {
-    development: 'http://localhost:8291',
+    development: 'http://18.143.194.24:8291',
     test: 'http://18.143.194.24:8291',
     prod: 'http://18.143.194.24:8291',
   }
