@@ -8,7 +8,10 @@
 <a name="english"></a>
 ## English
 
+
 A full-stack Content Management System (CMS) built with Go (Gin, GORM, Casbin) for the backend and Vue 3 (Vite, TailwindCSS) for the frontend. Features robust RBAC (role-based access control), JWT authentication, and a modern, responsive UI. Project structure is inspired by [nunu-go](https://github.com/go-nunu/nunu).
+
+**Note:** All backend operations (build, test, migration, server start, etc.) should be run via the provided `Makefile` for consistency and reproducibility.
 
 ### Features
 
@@ -66,6 +69,7 @@ A full-stack Content Management System (CMS) built with Go (Gin, GORM, Casbin) f
 - MySQL 8.0+
 - pnpm
 
+
 #### Backend Setup
 1. Clone repo
    ```bash
@@ -77,17 +81,13 @@ A full-stack Content Management System (CMS) built with Go (Gin, GORM, Casbin) f
    go mod download
    ```
 3. Configure database in `config/local.yml`
-4. Run migrations
+4. Run migrations (via Makefile)
    ```bash
    make migration
-   # or
-   go run cmd/migration/main.go
    ```
-5. Start server
+5. Start server (via Makefile)
    ```bash
    make server
-   # or
-   go run cmd/server/main.go
    ```
    Server: http://localhost:8291
 
@@ -156,6 +156,18 @@ UI → Update role_permissions (GORM) → Sync casbin_rule (Casbin)
 
 ### Development
 
+
+### Makefile Usage
+
+The project uses a Makefile as the main entrypoint for backend operations. Common targets:
+
+- `make build`      # Build the backend binary
+- `make test`       # Run backend tests with coverage
+- `make migration`  # Run database migrations
+- `make server`     # Start the backend server
+- `make docker`     # Build and run the backend in Docker
+- `make swag`       # Generate Swagger docs
+
 **Wire dependencies**
 ```bash
 cd cmd/server/wire
@@ -164,13 +176,12 @@ wire
 
 **Run tests**
 ```bash
-go test ./...
+make test
 ```
 
 **Build**
 ```bash
-# Backend
-go build -o bin/server cmd/server/main.go
+make build
 # Frontend
 cd web && pnpm build
 ```
@@ -184,7 +195,10 @@ MIT License
 <a name="中文"></a>
 ## 中文
 
+
 基于 Go (Gin, GORM, Casbin) 后端和 Vue3 (Vite, TailwindCSS) 前端的全栈内容管理系统。支持 RBAC 权限、JWT 登录、现代响应式 UI。项目结构参考 [nunu-go](https://github.com/go-nunu/nunu)。
+
+**注意：** 所有后端操作（构建、测试、迁移、启动等）请通过项目根目录的 `Makefile` 执行，确保一致性和可复现性。
 
 ### 功能特性
 
@@ -242,6 +256,7 @@ MIT License
 - MySQL 8.0+
 - pnpm
 
+
 #### 后端设置
 1. 克隆仓库
    ```bash
@@ -253,17 +268,13 @@ MIT License
    go mod download
    ```
 3. 配置数据库 `config/local.yml`
-4. 运行迁移
+4. 运行迁移（通过 Makefile）
    ```bash
    make migration
-   # 或
-   go run cmd/migration/main.go
    ```
-5. 启动服务
+5. 启动服务（通过 Makefile）
    ```bash
    make server
-   # 或
-   go run cmd/server/main.go
    ```
    地址: http://localhost:8291
 
@@ -332,6 +343,18 @@ UI → 更新 role_permissions（GORM）→ 同步 casbin_rule（Casbin）
 
 ### 开发
 
+
+### Makefile 用法
+
+本项目后端操作统一通过 Makefile 入口。常用命令：
+
+- `make build`      # 构建后端二进制
+- `make test`       # 运行后端测试并生成覆盖率
+- `make migration`  # 执行数据库迁移
+- `make server`     # 启动后端服务
+- `make docker`     # Docker 构建和运行
+- `make swag`       # 生成 Swagger 文档
+
 **生成 Wire 依赖**
 ```bash
 cd cmd/server/wire
@@ -340,13 +363,12 @@ wire
 
 **运行测试**
 ```bash
-go test ./...
+make test
 ```
 
 **构建**
 ```bash
-# 后端
-go build -o bin/server cmd/server/main.go
+make build
 # 前端
 cd web && pnpm build
 ```
