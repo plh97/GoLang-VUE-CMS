@@ -19,8 +19,8 @@ const formRef = ref(null)
 const state = reactive({
   submitLoading: false,
   submitText: '登录',
-  // username: 'admin@gmail.com',
-  username: 'user@gmail.com',
+  username: 'admin@gmail.com',
+  // username: 'user@gmail.com',
   password: '123456',
 })
 const validator = useValidator(state)
