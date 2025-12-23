@@ -18,24 +18,24 @@ export default defineBuildConfig({
     navigation: 'mixin',
     multiTabs: false,
     menus: [
-      {
-        name: 'user/list',
-        match: ['user/*'],
-        icon: 'UserOutlined',
-        // icon: '/user.svg',
-      },
+      // {
+      //   name: 'user/list',
+      //   match: ['user/*'],
+      //   icon: 'UserOutlined',
+      //   // icon: '/user.svg',
+      // },
       {
         name: 'account/list',
         match: ['account/*'],
         icon: 'UserManagementOutlined',
         // icon: '/server.svg',
       },
-      {
-        name: 'activity/list',
-        match: ['activity/*'],
-        icon: 'AppstoreOutlined',
-        // icon: '/server.svg',
-      },
+      // {
+      //   name: 'activity/list',
+      //   match: ['activity/*'],
+      //   icon: 'AppstoreOutlined',
+      //   // icon: '/server.svg',
+      // },
       {
         name: 'role/list',
         match: ['role/*'],
