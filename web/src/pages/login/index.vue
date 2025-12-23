@@ -57,7 +57,7 @@ async function submitHandler() {
     method: 'POST',
   }).then(async (res) => {
     setToken(res.accessToken)
-    router.replace('/user')
+    router.replace('/account')
   }).catch(() => {
     state.submitLoading = false
     state.submitText = '提交'
